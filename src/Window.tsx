@@ -1,6 +1,7 @@
-import { Box, Button, Flex, HStack, Spacer } from '@chakra-ui/react'
+import { Box, Button, Flex, HStack, Spacer, Text } from '@chakra-ui/react'
 import { FC } from 'react'
 import Draggable from 'react-draggable'
+import { MdClose, MdFullscreen, MdLogoDev, MdMinimize } from 'react-icons/md'
 
 const Window: FC = () => {
   return (
@@ -19,13 +20,15 @@ const Window: FC = () => {
           paddingX="4"
           borderTopRadius="md"
           // boxShadow="lg"
-          fontSize="sm"
           flexDir="row"
           alignItems="center"
           backgroundColor="blue.200"
           className="topbar"
         >
-          Window Title
+          <HStack>
+            <MdLogoDev />
+            <Text fontSize="sm">Window Title</Text>
+          </HStack>
           <Spacer />
           <HStack spacing={1}>
             <Button
@@ -34,7 +37,7 @@ const Window: FC = () => {
               backgroundColor="yellow.300"
               borderRadius="full"
             >
-              --
+              <MdMinimize />
             </Button>
             <Button
               width={6}
@@ -42,7 +45,7 @@ const Window: FC = () => {
               backgroundColor="green.300"
               borderRadius="full"
             >
-              □
+              <MdFullscreen />
             </Button>
             <Button
               width={6}
@@ -50,7 +53,7 @@ const Window: FC = () => {
               backgroundColor="red.300"
               borderRadius="full"
             >
-              &times;
+              <MdClose />
             </Button>
           </HStack>
         </Flex>
