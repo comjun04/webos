@@ -29,6 +29,22 @@ function App() {
     openedWindows.set(windowId, newObj)
   }
 
+  const handleTaskbarWindowAppClick = (windowId: string) => {
+    const clickedAppWindow = openedWindows.get(windowId)
+    if (clickedAppWindow == null) {
+      // TODO
+      return
+    }
+
+    const newWindowState: WindowState =
+      clickedAppWindow.state === 'minimized' ? 'normal' : 'minimized'
+
+    // copy object
+    const newObj = Object.assign({}, clickedAppWindow)
+    newObj.state = newWindowState
+    openedWindows.set(windowId, newObj)
+  }
+
   return (
     <>
       {[...openedWindows.values()].map((win) => (
@@ -39,7 +55,10 @@ function App() {
           onWindowStateChange={handleWindowStateChange}
         />
       ))}
-      <Taskbar openedWindows={openedWindows} />
+      <Taskbar
+        openedWindows={openedWindows}
+        onWindowAppClick={handleTaskbarWindowAppClick}
+      />
     </>
   )
 }

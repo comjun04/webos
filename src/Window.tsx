@@ -25,7 +25,15 @@ const Window: FC<WindowProps> = ({
   windowState,
   onWindowStateChange,
 }) => {
+  const minimized = windowState === 'minimized'
   const maximized = windowState === 'maximized'
+
+  const handleMinimizeBtnClick = () => {
+    onWindowStateChange?.(
+      id,
+      windowState === 'minimized' ? 'normal' : 'minimized',
+    )
+  }
 
   const handleMaximizeBtnClick = () => {
     onWindowStateChange?.(
@@ -48,6 +56,7 @@ const Window: FC<WindowProps> = ({
         borderRadius={maximized ? 'none' : 'md'}
         border="1px"
         borderColor="gray.600"
+        visibility={minimized ? 'hidden' : 'visible'}
       >
         {/* header */}
         <Flex
@@ -72,6 +81,7 @@ const Window: FC<WindowProps> = ({
               height={6}
               backgroundColor="yellow.300"
               borderRadius="full"
+              onClick={handleMinimizeBtnClick}
             >
               <MdMinimize />
             </Button>

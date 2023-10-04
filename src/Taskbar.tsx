@@ -1,4 +1,4 @@
-import { Box, Flex, HStack, Text } from '@chakra-ui/react'
+import { Box, Button, Flex, HStack, Text } from '@chakra-ui/react'
 import { FC } from 'react'
 import { MdSettings } from 'react-icons/md'
 
@@ -6,9 +6,10 @@ import { OpenedWindow } from './types'
 
 type TaskbarProps = {
   openedWindows: Map<string, OpenedWindow>
+  onWindowAppClick?: (windowId: string) => void
 }
 
-const Taskbar: FC<TaskbarProps> = ({ openedWindows }) => {
+const Taskbar: FC<TaskbarProps> = ({ openedWindows, onWindowAppClick }) => {
   return (
     <Box
       w="full"
@@ -69,18 +70,20 @@ const Taskbar: FC<TaskbarProps> = ({ openedWindows }) => {
         </Flex> */}
 
         {[...openedWindows.values()].map((win) => (
-          <Flex
+          <Button
             padding={2}
             borderRadius="md"
-            alignItems="center"
             _hover={{
               backgroundColor: 'gray.400',
             }}
             transition="0.1s linear background-color"
+            onClick={() => onWindowAppClick?.(win.id)}
           >
-            {win.icon ?? ''}
-            <Text>{win.title}</Text>
-          </Flex>
+            <Flex alignItems="center">
+              {win.icon ?? ''}
+              <Text>{win.title}</Text>
+            </Flex>
+          </Button>
         ))}
       </HStack>
     </Box>
