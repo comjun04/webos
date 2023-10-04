@@ -1,5 +1,5 @@
 import { Box, Button, Flex, HStack, Spacer, Text } from '@chakra-ui/react'
-import { FC, useState } from 'react'
+import { FC } from 'react'
 import Draggable from 'react-draggable'
 import {
   MdClose,
@@ -9,11 +9,29 @@ import {
   MdMinimize,
 } from 'react-icons/md'
 
-const Window: FC = () => {
-  const [maximized, setMaximized] = useState(false)
+import { WindowState } from './types'
+
+type WindowProps = {
+  id: string
+  title: string
+  windowState: WindowState
+
+  onWindowStateChange?: (windowId: string, newState: WindowState) => void
+}
+
+const Window: FC<WindowProps> = ({
+  id,
+  title,
+  windowState,
+  onWindowStateChange,
+}) => {
+  const maximized = windowState === 'maximized'
 
   const handleMaximizeBtnClick = () => {
-    setMaximized(!maximized)
+    onWindowStateChange?.(
+      id,
+      windowState === 'maximized' ? 'normal' : 'maximized',
+    )
   }
 
   return (
@@ -45,7 +63,7 @@ const Window: FC = () => {
         >
           <HStack>
             <MdLogoDev />
-            <Text fontSize="sm">Window Title</Text>
+            <Text fontSize="sm">{title}</Text>
           </HStack>
           <Spacer />
           <HStack spacing={1}>
