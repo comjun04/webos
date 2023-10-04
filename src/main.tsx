@@ -12,6 +12,10 @@ const customTheme = extendBaseTheme({
   components: {
     // Button
   },
+  fonts: {
+    heading: `'Pretendard', sans-serif`,
+    body: `'Pretendard', sans-serif`,
+  },
 })
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
