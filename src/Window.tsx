@@ -17,6 +17,7 @@ type WindowProps = {
   windowState: WindowState
 
   onWindowStateChange?: (windowId: string, newState: WindowState) => void
+  onClose?: (windowId: string) => void
 }
 
 const Window: FC<WindowProps> = ({
@@ -24,6 +25,7 @@ const Window: FC<WindowProps> = ({
   title,
   windowState,
   onWindowStateChange,
+  onClose,
 }) => {
   const minimized = windowState === 'minimized'
   const maximized = windowState === 'maximized'
@@ -40,6 +42,12 @@ const Window: FC<WindowProps> = ({
       id,
       windowState === 'maximized' ? 'normal' : 'maximized',
     )
+  }
+
+  const handleCloseBtnClick = () => {
+    // TODO run close hook
+
+    onClose?.(id)
   }
 
   return (
@@ -99,6 +107,7 @@ const Window: FC<WindowProps> = ({
               height={6}
               backgroundColor="red.300"
               borderRadius="full"
+              onClick={handleCloseBtnClick}
             >
               <MdClose />
             </Button>

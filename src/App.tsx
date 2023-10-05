@@ -45,6 +45,16 @@ function App() {
     openedWindows.set(windowId, newObj)
   }
 
+  const handleWindowClose = (windowId: string) => {
+    const win = openedWindows.get(windowId)
+    if (win == null) {
+      // TODO
+      return
+    }
+
+    openedWindows.delete(windowId)
+  }
+
   return (
     <>
       {[...openedWindows.values()].map((win) => (
@@ -53,6 +63,7 @@ function App() {
           title={win.title}
           windowState={win.state}
           onWindowStateChange={handleWindowStateChange}
+          onClose={handleWindowClose}
         />
       ))}
       <Taskbar
