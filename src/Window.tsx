@@ -60,8 +60,8 @@ const Window: FC<WindowProps> = ({
     >
       <div
         className={cn(
-          'border border-gray-600 shadow-xl',
-          maximized ? 'h-full w-full' : 'h-[600px] w-[600px]',
+          'border border-gray-600',
+          maximized ? 'h-full w-full' : 'h-[600px] w-[600px] shadow-xl',
           minimized ? 'invisible' : ''
         )}
       >
