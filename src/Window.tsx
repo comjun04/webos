@@ -33,14 +33,14 @@ const Window: FC<WindowProps> = ({
   const handleMinimizeBtnClick = () => {
     onWindowStateChange?.(
       id,
-      windowState === 'minimized' ? 'normal' : 'minimized',
+      windowState === 'minimized' ? 'normal' : 'minimized'
     )
   }
 
   const handleMaximizeBtnClick = () => {
     onWindowStateChange?.(
       id,
-      windowState === 'maximized' ? 'normal' : 'maximized',
+      windowState === 'maximized' ? 'normal' : 'maximized'
     )
   }
 
@@ -62,7 +62,7 @@ const Window: FC<WindowProps> = ({
         className={cn(
           'border border-gray-600',
           maximized ? '100vh w-full' : 'h-[600px] w-[600px] rounded-lg',
-          minimized ? 'invisible' : '',
+          minimized ? 'invisible' : ''
         )}
       >
         {/* header */}
@@ -97,64 +97,6 @@ const Window: FC<WindowProps> = ({
 
         <div>hello world</div>
       </div>
-
-      {/* <Box
-        w={maximized ? 'full' : 600}
-        h={maximized ? '100vh' : 400}
-        borderRadius={maximized ? 'none' : 'md'}
-        border="1px"
-        borderColor="gray.600"
-        visibility={minimized ? 'hidden' : 'visible'}
-      >
-        
-        <Flex
-          width="full"
-          height="8"
-          paddingX="4"
-          borderTopRadius={maximized ? 'none' : 'md'}
-          // boxShadow="lg"
-          flexDir="row"
-          alignItems="center"
-          backgroundColor="blue.200"
-          className="topbar"
-        >
-          <HStack>
-            <MdLogoDev />
-            <Text fontSize="sm">{title}</Text>
-          </HStack>
-          <Spacer />
-          <HStack spacing={1}>
-            <Button
-              width={6}
-              height={6}
-              backgroundColor="yellow.300"
-              borderRadius="full"
-              onClick={handleMinimizeBtnClick}
-            >
-              <MdMinimize />
-            </Button>
-            <Button
-              width={6}
-              height={6}
-              backgroundColor="green.300"
-              borderRadius="full"
-              onClick={handleMaximizeBtnClick}
-            >
-              {maximized ? <MdFullscreenExit /> : <MdFullscreen />}
-            </Button>
-            <Button
-              width={6}
-              height={6}
-              backgroundColor="red.300"
-              borderRadius="full"
-              onClick={handleCloseBtnClick}
-            >
-              <MdClose />
-            </Button>
-          </HStack>
-        </Flex>
-        <Box>hello world </Box>
-      </Box> */}
     </Draggable>
   )
 }
