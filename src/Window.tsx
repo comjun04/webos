@@ -1,4 +1,4 @@
-import { FC } from 'react'
+import { FC, useRef, useState } from 'react'
 import Draggable from 'react-draggable'
 import {
   MdClose,
@@ -8,6 +8,7 @@ import {
   MdMinimize,
 } from 'react-icons/md'
 
+import WindowResizeBorder from './WindowResizeBorder'
 import { WindowState } from './types'
 import cn from './util/merge-classnames'
 
@@ -27,6 +28,10 @@ const Window: FC<WindowProps> = ({
   onWindowStateChange,
   onClose,
 }) => {
+  const [width, setWidth] = useState(600)
+  const [height, setHeight] = useState(600)
+  const ref = useRef<HTMLDivElement>(null)
+
   const minimized = windowState === 'minimized'
   const maximized = windowState === 'maximized'
 
@@ -50,6 +55,18 @@ const Window: FC<WindowProps> = ({
     onClose?.(id)
   }
 
+  const handleResizeBottomDrag = (diff: number) => {
+    if (ref.current == null) return
+
+    setHeight((height) => (height += diff))
+  }
+
+  const handleResizeRightDrag = (diff: number) => {
+    if (ref.current == null) return
+
+    setWidth((width) => (width += diff))
+  }
+
   return (
     <Draggable
       handle=".topbar"
@@ -61,15 +78,22 @@ const Window: FC<WindowProps> = ({
       <div
         className={cn(
           'relative border border-gray-600',
-          maximized ? 'h-full w-full' : 'h-[600px] w-[600px] shadow-xl',
+          maximized ? 'h-full w-full' : 'shadow-xl',
           minimized ? 'invisible' : ''
         )}
+        style={{ width, height }}
+        ref={ref}
       >
         {/* resize borders */}
-        <div className="absolute top-[-3px] h-[6px] w-full cursor-ns-resize" />
-        <div className="absolute bottom-[-3px] h-[6px] w-full cursor-ns-resize" />
-        <div className="absolute left-[-3px] h-full w-[6px] cursor-ew-resize" />
-        <div className="absolute right-[-3px] h-full w-[6px] cursor-ew-resize" />
+        <div className="absolute top-0 h-[6px] w-full cursor-ns-resize" />
+        <WindowResizeBorder variant="bottom" onDrag={handleResizeBottomDrag} />
+        {/* <div className="absolute left-[-3px] h-full w-[6px] cursor-ew-resize" />
+        <div className="absolute right-[-3px] h-full w-[6px] cursor-ew-resize" /> */}
+        <WindowResizeBorder
+          variant="left"
+          onDrag={(d) => console.log('left', d)}
+        />
+        <WindowResizeBorder variant="right" onDrag={handleResizeRightDrag} />
 
         {/* header */}
         <div className="topbar flex flex-row border-b border-b-gray-600">
