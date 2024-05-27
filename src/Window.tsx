@@ -28,6 +28,8 @@ const Window: FC<WindowProps> = ({
   onWindowStateChange,
   onClose,
 }) => {
+  const [locationX, setLocationX] = useState<number>(0)
+  const [locationY, setLocationY] = useState<number>(0)
   const [width, setWidth] = useState(600)
   const [height, setHeight] = useState(600)
   const ref = useRef<HTMLDivElement>(null)
@@ -55,12 +57,23 @@ const Window: FC<WindowProps> = ({
     onClose?.(id)
   }
 
+  const handleResizeTopDrag = (diff: number) => {
+    if (ref.current == null) return
+
+    setLocationY((y) => (y += diff))
+    setHeight((height) => (height -= diff))
+  }
   const handleResizeBottomDrag = (diff: number) => {
     if (ref.current == null) return
 
     setHeight((height) => (height += diff))
   }
+  const handleResizeLeftDrag = (diff: number) => {
+    if (ref.current == null) return
 
+    setLocationX((x) => (x += diff))
+    setWidth((width) => (width -= diff))
+  }
   const handleResizeRightDrag = (diff: number) => {
     if (ref.current == null) return
 
@@ -72,8 +85,12 @@ const Window: FC<WindowProps> = ({
       handle=".topbar"
       cancel=".topbar button"
       bounds="body"
-      position={maximized ? { x: 0, y: 0 } : undefined}
+      position={maximized ? { x: 0, y: 0 } : { x: locationX, y: locationY }}
       disabled={maximized}
+      onDrag={(_, eventData) => {
+        setLocationX(eventData.x)
+        setLocationY(eventData.y)
+      }}
     >
       <div
         className={cn(
@@ -90,17 +107,14 @@ const Window: FC<WindowProps> = ({
         {/* resize borders */}
         {!maximized && (
           <>
-            <div className="absolute top-0 h-[6px] w-full cursor-ns-resize" />
+            <WindowResizeBorder variant="top" onDrag={handleResizeTopDrag} />
             <WindowResizeBorder
               variant="bottom"
               onDrag={handleResizeBottomDrag}
             />
             {/* <div className="absolute left-[-3px] h-full w-[6px] cursor-ew-resize" />
         <div className="absolute right-[-3px] h-full w-[6px] cursor-ew-resize" /> */}
-            <WindowResizeBorder
-              variant="left"
-              onDrag={(d) => console.log('left', d)}
-            />
+            <WindowResizeBorder variant="left" onDrag={handleResizeLeftDrag} />
             <WindowResizeBorder
               variant="right"
               onDrag={handleResizeRightDrag}
