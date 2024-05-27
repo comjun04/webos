@@ -68,7 +68,7 @@ const Window: FC<WindowProps> = ({
         {/* header */}
         <div className="topbar flex flex-row border-b border-b-gray-600">
           <div className="flex flex-row items-center gap-1 px-2 py-1">
-            <MdLogoDev />
+            <MdLogoDev size={20} />
             <span className="select-none text-sm">{title}</span>
           </div>
           <div className="grow" />

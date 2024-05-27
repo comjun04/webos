@@ -56,21 +56,29 @@ function App() {
   }
 
   return (
-    <>
-      {[...openedWindows.values()].map((win) => (
-        <Window
-          id={win.id}
-          title={win.title}
-          windowState={win.state}
-          onWindowStateChange={handleWindowStateChange}
-          onClose={handleWindowClose}
-        />
-      ))}
+    <div className="flex h-[100vh] flex-col">
+      {/* desktop area */}
+      <div className="grow">
+        {[...openedWindows.values()].map((win) => (
+          <Window
+            id={win.id}
+            title={win.title}
+            windowState={win.state}
+            onWindowStateChange={handleWindowStateChange}
+            onClose={handleWindowClose}
+          />
+        ))}
+      </div>
+
+      {/* taskbar 공간 확보용 */}
+      <div className="h-[48px] w-full" />
+
+      {/* real taskbar (fixed at bottom) */}
       <Taskbar
         openedWindows={openedWindows}
         onWindowAppClick={handleTaskbarWindowAppClick}
       />
-    </>
+    </div>
   )
 }
 
