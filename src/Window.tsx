@@ -60,11 +60,17 @@ const Window: FC<WindowProps> = ({
     >
       <div
         className={cn(
-          'border border-gray-600',
+          'relative border border-gray-600',
           maximized ? 'h-full w-full' : 'h-[600px] w-[600px] shadow-xl',
           minimized ? 'invisible' : ''
         )}
       >
+        {/* resize borders */}
+        <div className="absolute top-[-3px] h-[6px] w-full cursor-ns-resize" />
+        <div className="absolute bottom-[-3px] h-[6px] w-full cursor-ns-resize" />
+        <div className="absolute left-[-3px] h-full w-[6px] cursor-ew-resize" />
+        <div className="absolute right-[-3px] h-full w-[6px] cursor-ew-resize" />
+
         {/* header */}
         <div className="topbar flex flex-row border-b border-b-gray-600">
           <div className="flex flex-row items-center gap-1 px-2 py-1">
