@@ -1,4 +1,3 @@
-import { Box, Button, Flex, HStack, Spacer, Text } from '@chakra-ui/react'
 import { FC } from 'react'
 import Draggable from 'react-draggable'
 import {
@@ -10,6 +9,7 @@ import {
 } from 'react-icons/md'
 
 import { WindowState } from './types'
+import cn from './util/merge-classnames'
 
 type WindowProps = {
   id: string
@@ -58,7 +58,47 @@ const Window: FC<WindowProps> = ({
       position={maximized ? { x: 0, y: 0 } : undefined}
       disabled={maximized}
     >
-      <Box
+      <div
+        className={cn(
+          'border border-gray-600',
+          maximized ? '100vh w-full' : 'h-[600px] w-[600px] rounded-lg',
+          minimized ? 'invisible' : '',
+        )}
+      >
+        {/* header */}
+        <div className="topbar flex flex-row">
+          <div className="flex flex-row items-center gap-2">
+            <MdLogoDev />
+            <span className="text-sm">{title}</span>
+          </div>
+          <div className="grow" />
+          <div className="flex flex-row gap-2">
+            <button
+              className="flex h-6 w-6 items-center justify-center rounded-full bg-yellow-300"
+              onClick={handleMinimizeBtnClick}
+            >
+              <MdMinimize />
+            </button>
+            <button
+              className="flex h-6 w-6 items-center justify-center rounded-full bg-green-300"
+              onClick={handleMaximizeBtnClick}
+            >
+              {maximized ? <MdFullscreenExit /> : <MdFullscreen />}
+            </button>
+            <button
+              className="flex h-6 w-6 items-center justify-center rounded-full bg-red-300"
+              onClick={handleCloseBtnClick}
+            >
+              <MdClose />
+            </button>
+          </div>
+        </div>
+        {/* header end */}
+
+        <div>hello world</div>
+      </div>
+
+      {/* <Box
         w={maximized ? 'full' : 600}
         h={maximized ? '100vh' : 400}
         borderRadius={maximized ? 'none' : 'md'}
@@ -66,7 +106,7 @@ const Window: FC<WindowProps> = ({
         borderColor="gray.600"
         visibility={minimized ? 'hidden' : 'visible'}
       >
-        {/* header */}
+        
         <Flex
           width="full"
           height="8"
@@ -114,7 +154,7 @@ const Window: FC<WindowProps> = ({
           </HStack>
         </Flex>
         <Box>hello world </Box>
-      </Box>
+      </Box> */}
     </Draggable>
   )
 }
