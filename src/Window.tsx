@@ -88,15 +88,25 @@ const Window: FC<WindowProps> = ({
         ref={ref}
       >
         {/* resize borders */}
-        <div className="absolute top-0 h-[6px] w-full cursor-ns-resize" />
-        <WindowResizeBorder variant="bottom" onDrag={handleResizeBottomDrag} />
-        {/* <div className="absolute left-[-3px] h-full w-[6px] cursor-ew-resize" />
+        {!maximized && (
+          <>
+            <div className="absolute top-0 h-[6px] w-full cursor-ns-resize" />
+            <WindowResizeBorder
+              variant="bottom"
+              onDrag={handleResizeBottomDrag}
+            />
+            {/* <div className="absolute left-[-3px] h-full w-[6px] cursor-ew-resize" />
         <div className="absolute right-[-3px] h-full w-[6px] cursor-ew-resize" /> */}
-        <WindowResizeBorder
-          variant="left"
-          onDrag={(d) => console.log('left', d)}
-        />
-        <WindowResizeBorder variant="right" onDrag={handleResizeRightDrag} />
+            <WindowResizeBorder
+              variant="left"
+              onDrag={(d) => console.log('left', d)}
+            />
+            <WindowResizeBorder
+              variant="right"
+              onDrag={handleResizeRightDrag}
+            />
+          </>
+        )}
 
         {/* header */}
         <div className="topbar flex flex-row border-b border-b-gray-600">
