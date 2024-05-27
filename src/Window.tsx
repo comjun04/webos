@@ -78,10 +78,13 @@ const Window: FC<WindowProps> = ({
       <div
         className={cn(
           'relative border border-gray-600',
-          maximized ? 'h-full w-full' : 'shadow-xl',
+          !maximized && 'shadow-xl',
           minimized ? 'invisible' : ''
         )}
-        style={{ width, height }}
+        style={{
+          width: maximized ? '100%' : width,
+          height: maximized ? '100%' : height,
+        }}
         ref={ref}
       >
         {/* resize borders */}
