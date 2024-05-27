@@ -1,5 +1,5 @@
 import { FC } from 'react'
-import { MdSettings } from 'react-icons/md'
+import { MdHome } from 'react-icons/md'
 
 import { OpenedWindow } from './types'
 import cn from './util/merge-classnames'
@@ -14,7 +14,7 @@ const Taskbar: FC<TaskbarProps> = ({ openedWindows, onWindowAppClick }) => {
     <div className="align-center fixed bottom-0 flex h-12 w-full flex-row bg-gray-300 p-1">
       <div className="rounded-md p-2 transition duration-100 hover:bg-black/30">
         {/* start menu */}
-        <MdSettings size={24} />
+        <MdHome size={24} />
       </div>
 
       <div className="mx-1 h-full w-[1px] border-r border-black/30"></div>
