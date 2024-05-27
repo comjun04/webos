@@ -60,36 +60,40 @@ const Window: FC<WindowProps> = ({
     >
       <div
         className={cn(
-          'border border-gray-600',
-          maximized ? '100vh w-full' : 'h-[600px] w-[600px] rounded-lg',
+          'border border-gray-600 shadow-xl',
+          maximized ? 'h-full w-full' : 'h-[600px] w-[600px]',
           minimized ? 'invisible' : ''
         )}
       >
         {/* header */}
-        <div className="topbar flex flex-row">
-          <div className="flex flex-row items-center gap-2">
+        <div className="topbar flex flex-row border-b border-b-gray-600">
+          <div className="flex flex-row items-center gap-1 px-2 py-1">
             <MdLogoDev />
-            <span className="text-sm">{title}</span>
+            <span className="select-none text-sm">{title}</span>
           </div>
           <div className="grow" />
-          <div className="flex flex-row gap-2">
+          <div className="flex flex-row">
             <button
-              className="flex h-6 w-6 items-center justify-center rounded-full bg-yellow-300"
+              className="flex items-center justify-center px-3 transition hover:bg-black/30"
               onClick={handleMinimizeBtnClick}
             >
-              <MdMinimize />
+              <MdMinimize size={20} />
             </button>
             <button
-              className="flex h-6 w-6 items-center justify-center rounded-full bg-green-300"
+              className="flex items-center justify-center px-3 transition hover:bg-black/30"
               onClick={handleMaximizeBtnClick}
             >
-              {maximized ? <MdFullscreenExit /> : <MdFullscreen />}
+              {maximized ? (
+                <MdFullscreenExit size={20} />
+              ) : (
+                <MdFullscreen size={20} />
+              )}
             </button>
             <button
-              className="flex h-6 w-6 items-center justify-center rounded-full bg-red-300"
+              className="flex items-center justify-center px-3 transition hover:bg-red-500/70"
               onClick={handleCloseBtnClick}
             >
-              <MdClose />
+              <MdClose size={20} />
             </button>
           </div>
         </div>
