@@ -9,6 +9,7 @@ import {
 } from 'react-icons/md'
 
 import WindowResizeBorder from './WindowResizeBorder'
+import WindowResizeCorner from './WindowResizeCorner'
 import { WindowState } from './types'
 import cn from './util/merge-classnames'
 
@@ -121,6 +122,38 @@ const Window: FC<WindowProps> = ({
             />
           </>
         )}
+
+        {/* resize corners */}
+        <>
+          <WindowResizeCorner
+            variant="topleft"
+            onDrag={(diff) => {
+              handleResizeTopDrag(diff.y)
+              handleResizeLeftDrag(diff.x)
+            }}
+          />
+          <WindowResizeCorner
+            variant="topright"
+            onDrag={(diff) => {
+              handleResizeTopDrag(diff.y)
+              handleResizeRightDrag(diff.x)
+            }}
+          />
+          <WindowResizeCorner
+            variant="bottomleft"
+            onDrag={(diff) => {
+              handleResizeBottomDrag(diff.y)
+              handleResizeLeftDrag(diff.x)
+            }}
+          />
+          <WindowResizeCorner
+            variant="bottomright"
+            onDrag={(diff) => {
+              handleResizeBottomDrag(diff.y)
+              handleResizeRightDrag(diff.x)
+            }}
+          />
+        </>
 
         {/* header */}
         <div className="topbar flex flex-row border-b border-b-gray-600">
