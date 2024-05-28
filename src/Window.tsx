@@ -174,8 +174,8 @@ const Window: FC<WindowProps> = ({
 
         {/* header */}
         <div className="topbar flex h-[30px] flex-row border-b border-b-gray-600">
-          <div className="flex flex-row items-center gap-1 px-2 py-1">
-            <MdLogoDev size={20} />
+          <div className="flex shrink flex-row items-center gap-1 truncate px-2 py-1">
+            <MdLogoDev size={20} className="flex-none" />
             <span className="select-none text-sm">{title}</span>
           </div>
           <div className="grow" />
