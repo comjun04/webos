@@ -33,10 +33,23 @@ const Window: FC<WindowProps> = ({
   const [locationY, setLocationY] = useState<number>(0)
   const [width, setWidth] = useState(600)
   const [height, setHeight] = useState(600)
+  const [minWidth, setMinWidth] = useState(80)
+  const [minHeight, setMinHeight] = useState(80) // header height
   const ref = useRef<HTMLDivElement>(null)
 
   const minimized = windowState === 'minimized'
   const maximized = windowState === 'maximized'
+
+  const changeWidthBy = (diff: number) => {
+    const canChange = width + diff >= minWidth
+    setWidth(canChange ? width + diff : width)
+    return canChange
+  }
+  const changeHeightBy = (diff: number) => {
+    const canChange = height + diff >= minHeight
+    setHeight(canChange ? height + diff : height)
+    return canChange
+  }
 
   const handleMinimizeBtnClick = () => {
     onWindowStateChange?.(
@@ -62,23 +75,23 @@ const Window: FC<WindowProps> = ({
     if (ref.current == null) return
 
     setLocationY((y) => (y += diff))
-    setHeight((height) => (height -= diff))
+    changeHeightBy(-1 * diff)
   }
   const handleResizeBottomDrag = (diff: number) => {
     if (ref.current == null) return
 
-    setHeight((height) => (height += diff))
+    changeHeightBy(diff)
   }
   const handleResizeLeftDrag = (diff: number) => {
     if (ref.current == null) return
 
     setLocationX((x) => (x += diff))
-    setWidth((width) => (width -= diff))
+    changeWidthBy(-1 * diff)
   }
   const handleResizeRightDrag = (diff: number) => {
     if (ref.current == null) return
 
-    setWidth((width) => (width += diff))
+    changeWidthBy(diff)
   }
 
   return (
@@ -156,7 +169,7 @@ const Window: FC<WindowProps> = ({
         </>
 
         {/* header */}
-        <div className="topbar flex flex-row border-b border-b-gray-600">
+        <div className="topbar flex h-[30px] flex-row border-b border-b-gray-600">
           <div className="flex flex-row items-center gap-1 px-2 py-1">
             <MdLogoDev size={20} />
             <span className="select-none text-sm">{title}</span>
