@@ -33,7 +33,7 @@ const Window: FC<WindowProps> = ({
   const [locationY, setLocationY] = useState<number>(0)
   const [width, setWidth] = useState(600)
   const [height, setHeight] = useState(600)
-  const [minWidth, setMinWidth] = useState(80)
+  const [minWidth, setMinWidth] = useState(160)
   const [minHeight, setMinHeight] = useState(80) // header height
   const ref = useRef<HTMLDivElement>(null)
 
