@@ -74,8 +74,10 @@ const Window: FC<WindowProps> = ({
   const handleResizeTopDrag = (diff: number) => {
     if (ref.current == null) return
 
-    setLocationY((y) => (y += diff))
-    changeHeightBy(-1 * diff)
+    const changed = changeHeightBy(-1 * diff)
+    if (changed) {
+      setLocationY((y) => (y += diff))
+    }
   }
   const handleResizeBottomDrag = (diff: number) => {
     if (ref.current == null) return
@@ -85,8 +87,10 @@ const Window: FC<WindowProps> = ({
   const handleResizeLeftDrag = (diff: number) => {
     if (ref.current == null) return
 
-    setLocationX((x) => (x += diff))
-    changeWidthBy(-1 * diff)
+    const changed = changeWidthBy(-1 * diff)
+    if (changed) {
+      setLocationX((x) => (x += diff))
+    }
   }
   const handleResizeRightDrag = (diff: number) => {
     if (ref.current == null) return
