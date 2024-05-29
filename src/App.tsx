@@ -1,8 +1,8 @@
 import { useMap } from '@react-hookz/web'
 
-import Desktop from './Desktop'
 import Taskbar from './Taskbar'
 import Window from './Window'
+import Desktop from './desktop/Desktop'
 import { OpenedWindow, WindowState } from './types'
 
 function App() {
