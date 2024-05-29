@@ -17,6 +17,7 @@ type WindowProps = {
   id: string
   title: string
   windowState: WindowState
+  zIndex: number
 
   onWindowStateChange?: (windowId: string, newState: WindowState) => void
   onClose?: (windowId: string) => void
@@ -26,6 +27,7 @@ const Window: FC<WindowProps> = ({
   id,
   title,
   windowState,
+  zIndex,
   onWindowStateChange,
   onClose,
 }) => {
@@ -119,6 +121,7 @@ const Window: FC<WindowProps> = ({
         style={{
           width: maximized ? '100%' : width,
           height: maximized ? '100%' : height,
+          zIndex,
         }}
         ref={ref}
       >
@@ -210,7 +213,7 @@ const Window: FC<WindowProps> = ({
           </div>
           {/* header end */}
 
-          <div>hello world</div>
+          <div className="bg-green-400 text-purple-600">hello world</div>
         </div>
       </div>
     </Draggable>

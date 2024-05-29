@@ -57,7 +57,7 @@ const Desktop: FC = () => {
         setSelectedIcon(null)
       }}
     >
-      {icons.map((el) => (
+      {icons.map((el, idx) => (
         <DesktopIcon
           key={el.name}
           icon={el.icon}
@@ -66,6 +66,7 @@ const Desktop: FC = () => {
           style={{
             left: el.x,
             top: el.y,
+            zIndex: selectedIcon === el.name ? 990 : idx + 1,
           }}
           onMouseDown={() => {
             setSelectedIcon(el.name)

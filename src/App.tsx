@@ -62,11 +62,13 @@ function App() {
       <div className="relative grow">
         <Desktop />
 
-        {[...openedWindows.values()].map((win) => (
+        {[...openedWindows.values()].map((win, idx) => (
           <Window
             id={win.id}
             title={win.title}
             windowState={win.state}
+            // TODO: 포커싱된 창에 따라 dynamic z-index 지정
+            zIndex={1001 + idx}
             onWindowStateChange={handleWindowStateChange}
             onClose={handleWindowClose}
           />
