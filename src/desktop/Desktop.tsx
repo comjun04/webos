@@ -1,4 +1,4 @@
-import { FC, ReactNode } from 'react'
+import { FC, ReactNode, useRef, useState } from 'react'
 import { MdLogoDev } from 'react-icons/md'
 
 import DesktopIcon from './DesktopIcon'
@@ -47,16 +47,33 @@ const icons: {
 ]
 
 const Desktop: FC = () => {
+  const [selectedIcon, setSelectedIcon] = useState<string | null>(null)
+  const ref = useRef<HTMLDivElement>(null)
+
   return (
-    <div className="relative h-full w-full">
+    <div
+      className="relative h-full w-full"
+      ref={ref}
+      onClick={(event) => {
+        if (ref.current !== event.target) return
+
+        // handle background click
+        setSelectedIcon(null)
+      }}
+    >
       {icons.map((el) => (
         <DesktopIcon
           key={el.name}
           icon={el.icon}
           name={el.name}
+          selected={selectedIcon === el.name}
+          className="desktopIcons"
           style={{
             left: el.x + GAP,
             top: el.y + GAP,
+          }}
+          onClick={() => {
+            setSelectedIcon(el.name)
           }}
         />
       ))}
