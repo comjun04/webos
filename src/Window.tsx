@@ -112,7 +112,7 @@ const Window: FC<WindowProps> = ({
     >
       <div
         className={cn(
-          'relative border border-gray-600',
+          'absolute left-0 top-0 border border-gray-600',
           !maximized && 'shadow-xl',
           minimized ? 'invisible' : ''
         )}
@@ -122,91 +122,96 @@ const Window: FC<WindowProps> = ({
         }}
         ref={ref}
       >
-        {/* resize borders */}
-        {!maximized && (
-          <>
-            <WindowResizeBorder variant="top" onDrag={handleResizeTopDrag} />
-            <WindowResizeBorder
-              variant="bottom"
-              onDrag={handleResizeBottomDrag}
-            />
-            {/* <div className="absolute left-[-3px] h-full w-[6px] cursor-ew-resize" />
+        <div className="relative h-full w-full">
+          {/* resize borders */}
+          {!maximized && (
+            <>
+              <WindowResizeBorder variant="top" onDrag={handleResizeTopDrag} />
+              <WindowResizeBorder
+                variant="bottom"
+                onDrag={handleResizeBottomDrag}
+              />
+              {/* <div className="absolute left-[-3px] h-full w-[6px] cursor-ew-resize" />
         <div className="absolute right-[-3px] h-full w-[6px] cursor-ew-resize" /> */}
-            <WindowResizeBorder variant="left" onDrag={handleResizeLeftDrag} />
-            <WindowResizeBorder
-              variant="right"
-              onDrag={handleResizeRightDrag}
+              <WindowResizeBorder
+                variant="left"
+                onDrag={handleResizeLeftDrag}
+              />
+              <WindowResizeBorder
+                variant="right"
+                onDrag={handleResizeRightDrag}
+              />
+            </>
+          )}
+
+          {/* resize corners */}
+          <>
+            <WindowResizeCorner
+              variant="topleft"
+              onDrag={(diff) => {
+                handleResizeTopDrag(diff.y)
+                handleResizeLeftDrag(diff.x)
+              }}
+            />
+            <WindowResizeCorner
+              variant="topright"
+              onDrag={(diff) => {
+                handleResizeTopDrag(diff.y)
+                handleResizeRightDrag(diff.x)
+              }}
+            />
+            <WindowResizeCorner
+              variant="bottomleft"
+              onDrag={(diff) => {
+                handleResizeBottomDrag(diff.y)
+                handleResizeLeftDrag(diff.x)
+              }}
+            />
+            <WindowResizeCorner
+              variant="bottomright"
+              onDrag={(diff) => {
+                handleResizeBottomDrag(diff.y)
+                handleResizeRightDrag(diff.x)
+              }}
             />
           </>
-        )}
 
-        {/* resize corners */}
-        <>
-          <WindowResizeCorner
-            variant="topleft"
-            onDrag={(diff) => {
-              handleResizeTopDrag(diff.y)
-              handleResizeLeftDrag(diff.x)
-            }}
-          />
-          <WindowResizeCorner
-            variant="topright"
-            onDrag={(diff) => {
-              handleResizeTopDrag(diff.y)
-              handleResizeRightDrag(diff.x)
-            }}
-          />
-          <WindowResizeCorner
-            variant="bottomleft"
-            onDrag={(diff) => {
-              handleResizeBottomDrag(diff.y)
-              handleResizeLeftDrag(diff.x)
-            }}
-          />
-          <WindowResizeCorner
-            variant="bottomright"
-            onDrag={(diff) => {
-              handleResizeBottomDrag(diff.y)
-              handleResizeRightDrag(diff.x)
-            }}
-          />
-        </>
+          {/* header */}
+          <div className="topbar flex h-[30px] flex-row border-b border-b-gray-600 bg-white">
+            <div className="flex shrink flex-row items-center gap-1 truncate px-2 py-1">
+              <MdLogoDev size={20} className="flex-none" />
+              <span className="select-none text-sm">{title}</span>
+            </div>
+            <div className="grow" />
+            <div className="flex flex-row">
+              <button
+                className="flex items-center justify-center px-3 transition hover:bg-black/30"
+                onClick={handleMinimizeBtnClick}
+              >
+                <MdMinimize size={20} />
+              </button>
+              <button
+                className="flex items-center justify-center px-3 transition hover:bg-black/30"
+                onClick={handleMaximizeBtnClick}
+              >
+                {maximized ? (
+                  <MdFullscreenExit size={20} />
+                ) : (
+                  <MdFullscreen size={20} />
+                )}
+              </button>
+              <button
+                className="flex items-center justify-center px-3 transition hover:bg-red-500/70"
+                onClick={handleCloseBtnClick}
+              >
+                <MdClose size={20} />
+              </button>
+            </div>
+          </div>
+          {/* header end */}
 
-        {/* header */}
-        <div className="topbar flex h-[30px] flex-row border-b border-b-gray-600">
-          <div className="flex shrink flex-row items-center gap-1 truncate px-2 py-1">
-            <MdLogoDev size={20} className="flex-none" />
-            <span className="select-none text-sm">{title}</span>
-          </div>
-          <div className="grow" />
-          <div className="flex flex-row">
-            <button
-              className="flex items-center justify-center px-3 transition hover:bg-black/30"
-              onClick={handleMinimizeBtnClick}
-            >
-              <MdMinimize size={20} />
-            </button>
-            <button
-              className="flex items-center justify-center px-3 transition hover:bg-black/30"
-              onClick={handleMaximizeBtnClick}
-            >
-              {maximized ? (
-                <MdFullscreenExit size={20} />
-              ) : (
-                <MdFullscreen size={20} />
-              )}
-            </button>
-            <button
-              className="flex items-center justify-center px-3 transition hover:bg-red-500/70"
-              onClick={handleCloseBtnClick}
-            >
-              <MdClose size={20} />
-            </button>
-          </div>
+          <div>hello world</div>
         </div>
-        {/* header end */}
-
-        <div>hello world</div>
       </div>
     </Draggable>
   )

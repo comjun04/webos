@@ -58,7 +58,9 @@ function App() {
   return (
     <div className="flex h-[100vh] flex-col">
       {/* desktop area */}
-      <div className="grow">
+      <div className="relative grow">
+        <Desktop />
+
         {[...openedWindows.values()].map((win) => (
           <Window
             id={win.id}
