@@ -1,5 +1,6 @@
 import { useMap } from '@react-hookz/web'
 
+import Desktop from './Desktop'
 import Taskbar from './Taskbar'
 import Window from './Window'
 import { OpenedWindow, WindowState } from './types'
@@ -56,7 +57,7 @@ function App() {
   }
 
   return (
-    <div className="flex h-[100vh] flex-col">
+    <div className="flex h-[100vh] flex-col bg-blue-300">
       {/* desktop area */}
       <div className="relative grow">
         <Desktop />
