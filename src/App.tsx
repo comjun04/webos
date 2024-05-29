@@ -2,6 +2,7 @@ import { useMap } from '@react-hookz/web'
 
 import Taskbar from './Taskbar'
 import Window from './Window'
+import Desktop from './desktop/Desktop'
 import { OpenedWindow, WindowState } from './types'
 
 function App() {
@@ -56,14 +57,18 @@ function App() {
   }
 
   return (
-    <div className="flex h-[100vh] flex-col">
+    <div className="flex h-[100vh] flex-col bg-blue-300">
       {/* desktop area */}
-      <div className="grow">
-        {[...openedWindows.values()].map((win) => (
+      <div className="relative grow">
+        <Desktop />
+
+        {[...openedWindows.values()].map((win, idx) => (
           <Window
             id={win.id}
             title={win.title}
             windowState={win.state}
+            // TODO: 포커싱된 창에 따라 dynamic z-index 지정
+            zIndex={1001 + idx}
             onWindowStateChange={handleWindowStateChange}
             onClose={handleWindowClose}
           />
