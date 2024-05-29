@@ -26,11 +26,16 @@ const DesktopIcon: FC<DesktopIconProps> = ({
   const ref = useRef<HTMLDivElement>(null)
   const refToUse = refProp ?? ref
   return (
-    <Draggable bounds=".desktop" nodeRef={refToUse} onMouseDown={onMouseDown}>
+    <Draggable
+      bounds=".desktop"
+      // grid={[64, 80]}
+      nodeRef={refToUse}
+      onMouseDown={onMouseDown}
+    >
       <div
         ref={refToUse}
         className={cn(
-          'absolute flex h-[60px] w-[72px] flex-col items-center gap-[2px]',
+          'absolute flex h-[64px] w-[80px] flex-col items-center gap-[2px] p-1',
           selected ? 'bg-white/30' : 'hover:bg-white/20',
           className
         )}
