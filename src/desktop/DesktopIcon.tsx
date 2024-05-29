@@ -1,4 +1,4 @@
-import { FC, ReactNode, JSX, useRef, RefObject } from 'react'
+import { FC, ReactNode, JSX, useRef, RefObject, useState } from 'react'
 import Draggable from 'react-draggable'
 
 import cn from '../util/merge-classnames'
@@ -21,16 +21,22 @@ const DesktopIcon: FC<DesktopIconProps> = ({
   className,
   ref: refProp,
   onMouseDown,
+  style,
   ...props
 }) => {
+  const [dragging, setDragging] = useState(false)
+
   const ref = useRef<HTMLDivElement>(null)
   const refToUse = refProp ?? ref
+
   return (
     <Draggable
       bounds=".desktop"
       // grid={[64, 80]}
       nodeRef={refToUse}
       onMouseDown={onMouseDown}
+      onStart={() => setDragging(true)}
+      onStop={() => setDragging(false)}
     >
       <div
         ref={refToUse}
@@ -39,6 +45,10 @@ const DesktopIcon: FC<DesktopIconProps> = ({
           selected ? 'bg-white/30' : 'hover:bg-white/20',
           className
         )}
+        style={{
+          ...style,
+          zIndex: dragging ? 9990 : selected ? 990 : style?.zIndex,
+        }}
         {...props}
       >
         <div className={'flex-none'}>{icon}</div>

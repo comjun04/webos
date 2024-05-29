@@ -66,7 +66,7 @@ const Desktop: FC = () => {
           style={{
             left: el.x,
             top: el.y,
-            zIndex: selectedIcon === el.name ? 990 : idx + 1,
+            zIndex: idx + 1,
           }}
           onMouseDown={() => {
             setSelectedIcon(el.name)
