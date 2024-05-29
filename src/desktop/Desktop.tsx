@@ -52,7 +52,7 @@ const Desktop: FC = () => {
 
   return (
     <div
-      className="relative h-full w-full"
+      className="desktop relative h-full w-full"
       ref={ref}
       onClick={(event) => {
         if (ref.current !== event.target) return
@@ -67,7 +67,6 @@ const Desktop: FC = () => {
           icon={el.icon}
           name={el.name}
           selected={selectedIcon === el.name}
-          className="desktopIcons"
           style={{
             left: el.x + GAP,
             top: el.y + GAP,
