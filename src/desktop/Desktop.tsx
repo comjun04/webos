@@ -3,10 +3,6 @@ import { MdLogoDev } from 'react-icons/md'
 
 import DesktopIcon from './DesktopIcon'
 
-// const ICON_WIDTH = 72
-// const ICON_HEIGHT = 60
-const GAP = 4
-
 // test appplications
 const icons: {
   icon: ReactNode
@@ -68,8 +64,8 @@ const Desktop: FC = () => {
           name={el.name}
           selected={selectedIcon === el.name}
           style={{
-            left: el.x + GAP,
-            top: el.y + GAP,
+            left: el.x,
+            top: el.y,
           }}
           onMouseDown={() => {
             setSelectedIcon(el.name)
