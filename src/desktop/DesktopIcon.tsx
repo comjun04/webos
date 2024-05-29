@@ -5,12 +5,13 @@ import cn from '../util/merge-classnames'
 
 type DesktopIconProps = Omit<
   JSX.IntrinsicElements['div'],
-  'children' | 'ref'
+  'children' | 'ref' | 'onMouseDown'
 > & {
   icon: ReactNode
   name: string
   selected?: boolean
   ref?: RefObject<HTMLDivElement>
+  onMouseDown?: (event: MouseEvent) => void
 }
 
 const DesktopIcon: FC<DesktopIconProps> = ({
@@ -19,12 +20,13 @@ const DesktopIcon: FC<DesktopIconProps> = ({
   selected = false,
   className,
   ref: refProp,
+  onMouseDown,
   ...props
 }) => {
   const ref = useRef<HTMLDivElement>(null)
   const refToUse = refProp ?? ref
   return (
-    <Draggable bounds=".desktop" nodeRef={refToUse}>
+    <Draggable bounds=".desktop" nodeRef={refToUse} onMouseDown={onMouseDown}>
       <div
         ref={refToUse}
         className={cn(

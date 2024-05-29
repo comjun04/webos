@@ -54,7 +54,7 @@ const Desktop: FC = () => {
     <div
       className="desktop relative h-full w-full"
       ref={ref}
-      onClick={(event) => {
+      onMouseDown={(event) => {
         if (ref.current !== event.target) return
 
         // handle background click
@@ -71,7 +71,7 @@ const Desktop: FC = () => {
             left: el.x + GAP,
             top: el.y + GAP,
           }}
-          onClick={() => {
+          onMouseDown={() => {
             setSelectedIcon(el.name)
           }}
         />
