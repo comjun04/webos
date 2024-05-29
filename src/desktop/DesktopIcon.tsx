@@ -10,6 +10,7 @@ type DesktopIconProps = Omit<
   icon: ReactNode
   name: string
   selected?: boolean
+  gridSnap?: boolean
   ref?: RefObject<HTMLDivElement>
   onMouseDown?: (event: MouseEvent) => void
 }
@@ -18,6 +19,7 @@ const DesktopIcon: FC<DesktopIconProps> = ({
   icon,
   name,
   selected = false,
+  gridSnap = false,
   className,
   ref: refProp,
   onMouseDown,
@@ -32,7 +34,7 @@ const DesktopIcon: FC<DesktopIconProps> = ({
   return (
     <Draggable
       bounds=".desktop"
-      // grid={[64, 80]}
+      grid={gridSnap ? [64, 80] : undefined}
       nodeRef={refToUse}
       onMouseDown={onMouseDown}
       onStart={() => setDragging(true)}
