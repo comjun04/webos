@@ -30,3 +30,50 @@ export const useApplicationStore = create<AppState>((set) => ({
       return { apps: newAppList }
     }),
 }))
+
+// ====
+
+interface WindowRegisterPayload {
+  appId: string
+  id: string
+  title: string
+}
+
+interface WindowDetail {
+  appId: string
+  id: string
+  title: string
+  layer: number
+}
+
+type WindowState = {
+  windows: WindowDetail[]
+  registerWindow: (win: WindowRegisterPayload) => void
+  unregisterWindow: (query: { appId: string; id: string }) => void
+}
+
+export const useWindowStore = create<WindowState>((set) => ({
+  windows: [],
+  registerWindow: (win) =>
+    set((state) => {
+      let highestWindowLayer = -1
+      for (const w of state.windows) {
+        if (w.layer > highestWindowLayer) {
+          highestWindowLayer = w.layer
+        }
+      }
+
+      const layer = highestWindowLayer + 1
+      return { windows: [...state.windows, { ...win, layer }] }
+    }),
+  unregisterWindow: ({ appId, id }) =>
+    set((state) => {
+      const index = state.windows.findIndex(
+        (win) => win.id === id && win.appId === appId
+      )
+      if (index < 0) return {}
+
+      const newWindowList = state.windows.slice().splice(index, 1)
+      return { windows: newWindowList }
+    }),
+}))

@@ -2,7 +2,9 @@ import { ComponentType, FC, ReactNode, createContext, useEffect } from 'react'
 
 import { useApplicationStore } from '../store'
 
-export const ApplicationContext = createContext({})
+export const applicationContext = createContext<{
+  id: string
+}>({ id: '' })
 
 interface IconComponentProps {
   size?: number
@@ -17,7 +19,8 @@ type ApplicationProps = {
 }
 
 const Application: FC<ApplicationProps> = ({ id, name, icon, children }) => {
-  const { registerApp, unregisterApp } = useApplicationStore()
+  const registerApp = useApplicationStore((state) => state.registerApp)
+  const unregisterApp = useApplicationStore((state) => state.unregisterApp)
 
   useEffect(() => {
     registerApp({ id, name, icon })
@@ -25,9 +28,9 @@ const Application: FC<ApplicationProps> = ({ id, name, icon, children }) => {
   }, [])
 
   return (
-    <ApplicationContext.Provider value={{}}>
+    <applicationContext.Provider value={{ id }}>
       {children}
-    </ApplicationContext.Provider>
+    </applicationContext.Provider>
   )
 }
 

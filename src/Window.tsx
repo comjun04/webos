@@ -1,4 +1,4 @@
-import { FC, useRef, useState } from 'react'
+import { FC, ReactNode, useContext, useEffect, useRef, useState } from 'react'
 import Draggable from 'react-draggable'
 import {
   MdClose,
@@ -10,6 +10,8 @@ import {
 
 import WindowResizeBorder from './WindowResizeBorder'
 import WindowResizeCorner from './WindowResizeCorner'
+import { useWindowStore } from './store'
+import { applicationContext } from './structures/Application'
 import { WindowState } from './types'
 import cn from './util/merge-classnames'
 
@@ -18,6 +20,7 @@ type WindowProps = {
   title: string
   windowState: WindowState
   zIndex: number
+  children: ReactNode
 
   onWindowStateChange?: (windowId: string, newState: WindowState) => void
   onClose?: (windowId: string) => void
@@ -28,6 +31,7 @@ const Window: FC<WindowProps> = ({
   title,
   windowState,
   zIndex,
+  children,
   onWindowStateChange,
   onClose,
 }) => {
@@ -39,8 +43,17 @@ const Window: FC<WindowProps> = ({
   const [minHeight] = useState(80) // header height
   const ref = useRef<HTMLDivElement>(null)
 
+  const appContext = useContext(applicationContext)
+  const registerWindow = useWindowStore((state) => state.registerWindow)
+  const unregisterWindow = useWindowStore((state) => state.unregisterWindow)
+
   const minimized = windowState === 'minimized'
   const maximized = windowState === 'maximized'
+
+  useEffect(() => {
+    registerWindow({ appId: appContext.id, id, title })
+    return () => unregisterWindow({ appId: appContext.id, id })
+  }, [])
 
   const changeWidthBy = (diff: number) => {
     const canChange = width + diff >= minWidth
@@ -125,7 +138,7 @@ const Window: FC<WindowProps> = ({
         }}
         ref={ref}
       >
-        <div className="relative h-full w-full">
+        <div className="relative flex h-full w-full flex-col">
           {/* resize borders */}
           {!maximized && (
             <>
@@ -213,7 +226,7 @@ const Window: FC<WindowProps> = ({
           </div>
           {/* header end */}
 
-          <div className="bg-green-400 text-purple-600">hello world</div>
+          <div className="grow">{children}</div>
         </div>
       </div>
     </Draggable>
