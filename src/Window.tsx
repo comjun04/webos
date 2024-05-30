@@ -7,6 +7,7 @@ import {
   MdLogoDev,
   MdMinimize,
 } from 'react-icons/md'
+import { useShallow } from 'zustand/react/shallow'
 
 import WindowResizeBorder from './WindowResizeBorder'
 import WindowResizeCorner from './WindowResizeCorner'
@@ -18,8 +19,6 @@ import cn from './util/merge-classnames'
 type WindowProps = {
   id: string
   title: string
-  windowState: WindowState
-  zIndex: number
   children: ReactNode
 
   onWindowStateChange?: (windowId: string, newState: WindowState) => void
@@ -29,8 +28,6 @@ type WindowProps = {
 const Window: FC<WindowProps> = ({
   id,
   title,
-  windowState,
-  zIndex,
   children,
   onWindowStateChange,
   onClose,
@@ -44,15 +41,33 @@ const Window: FC<WindowProps> = ({
   const ref = useRef<HTMLDivElement>(null)
 
   const appContext = useContext(applicationContext)
-  const registerWindow = useWindowStore((state) => state.registerWindow)
-  const unregisterWindow = useWindowStore((state) => state.unregisterWindow)
+
+  const appId = appContext.id
+  const windowFullId = `${appId}.${id}`
+
+  const { windowInfo, registerWindow, unregisterWindow, changeWindowState } =
+    useWindowStore(
+      useShallow((state) => {
+        const win = state.getInfo(windowFullId)
+        return {
+          windowInfo: win,
+          registerWindow: state.registerWindow,
+          unregisterWindow: state.unregisterWindow,
+          changeWindowState: state.changeWindowState,
+        }
+      })
+    )
+
+  // layer는 0부터 시작, 처음 초기화 시 windowInfo가 없으므로 임시로 1000 부여
+  const zIndex = 1001 + (windowInfo?.layer ?? -1)
+  const windowState = windowInfo?.state ?? 'normal'
 
   const minimized = windowState === 'minimized'
   const maximized = windowState === 'maximized'
 
   useEffect(() => {
-    registerWindow({ appId: appContext.id, id, title })
-    return () => unregisterWindow({ appId: appContext.id, id })
+    registerWindow({ appId, windowId: id, title })
+    return () => unregisterWindow(windowFullId)
   }, [])
 
   const changeWidthBy = (diff: number) => {
@@ -67,15 +82,15 @@ const Window: FC<WindowProps> = ({
   }
 
   const handleMinimizeBtnClick = () => {
-    onWindowStateChange?.(
-      id,
+    changeWindowState(
+      windowFullId,
       windowState === 'minimized' ? 'normal' : 'minimized'
     )
   }
 
   const handleMaximizeBtnClick = () => {
-    onWindowStateChange?.(
-      id,
+    changeWindowState(
+      windowFullId,
       windowState === 'maximized' ? 'normal' : 'maximized'
     )
   }

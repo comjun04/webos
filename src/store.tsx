@@ -1,5 +1,6 @@
 import { ComponentType } from 'react'
 import { create } from 'zustand'
+import { immer } from 'zustand/middleware/immer'
 
 interface IconComponentProps {
   size?: number
@@ -35,45 +36,71 @@ export const useApplicationStore = create<AppState>((set) => ({
 
 interface WindowRegisterPayload {
   appId: string
-  id: string
+  windowId: string
   title: string
 }
+
+type WindowState = 'normal' | 'minimized' | 'maximized'
 
 interface WindowDetail {
   appId: string
-  id: string
+  windowFullId: string
   title: string
   layer: number
+  state: WindowState
 }
 
-type WindowState = {
+type WindowStoreState = {
   windows: WindowDetail[]
+
+  getInfo: (id: string) => WindowDetail | undefined
   registerWindow: (win: WindowRegisterPayload) => void
-  unregisterWindow: (query: { appId: string; id: string }) => void
+  unregisterWindow: (id: string) => void
+  changeWindowState: (id: string, state: WindowState) => void
 }
 
-export const useWindowStore = create<WindowState>((set) => ({
-  windows: [],
-  registerWindow: (win) =>
-    set((state) => {
-      let highestWindowLayer = -1
-      for (const w of state.windows) {
-        if (w.layer > highestWindowLayer) {
-          highestWindowLayer = w.layer
+export const useWindowStore = create(
+  immer<WindowStoreState>((set, get) => ({
+    windows: [],
+    getInfo: (id) => {
+      const list = get().windows
+      const win = list.find((el) => el.windowFullId === id)
+      return win
+    },
+    registerWindow: (win) =>
+      set((state) => {
+        let highestWindowLayer = -1
+        for (const w of state.windows) {
+          if (w.layer > highestWindowLayer) {
+            highestWindowLayer = w.layer
+          }
         }
-      }
 
-      const layer = highestWindowLayer + 1
-      return { windows: [...state.windows, { ...win, layer }] }
-    }),
-  unregisterWindow: ({ appId, id }) =>
-    set((state) => {
-      const index = state.windows.findIndex(
-        (win) => win.id === id && win.appId === appId
-      )
-      if (index < 0) return {}
+        const windowFullId = `${win.appId}.${win.windowId}`
+        const layer = highestWindowLayer + 1
+        state.windows.push({
+          appId: win.appId,
+          windowFullId,
+          title: win.title,
+          layer,
+          state: 'normal',
+        })
+      }),
+    unregisterWindow: (id) =>
+      set((state) => {
+        const index = state.windows.findIndex((win) => win.windowFullId === id)
+        if (index < 0) return {}
 
-      const newWindowList = state.windows.slice().splice(index, 1)
-      return { windows: newWindowList }
-    }),
-}))
+        const newWindowList = state.windows.slice().splice(index, 1)
+        return { windows: newWindowList }
+      }),
+
+    changeWindowState: (id, stateToChange) =>
+      set((state) => {
+        const win = state.windows.find((el) => el.windowFullId === id)
+        if (win == null) return
+
+        win.state = stateToChange
+      }),
+  }))
+)
