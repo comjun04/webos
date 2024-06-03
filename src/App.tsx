@@ -1,4 +1,5 @@
 import Taskbar from './Taskbar'
+import TestApp from './apps/TestApp/TestApp'
 import Desktop from './desktop/Desktop'
 
 function App() {
@@ -7,6 +8,8 @@ function App() {
       {/* desktop area */}
       <div className="relative grow">
         <Desktop />
+
+        <TestApp />
 
         {/* {[...openedWindows.values()].map((win, idx) => (
           <Window
