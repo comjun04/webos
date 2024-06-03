@@ -70,6 +70,12 @@ const Window: FC<WindowProps> = ({
     return () => unregisterWindow(windowFullId)
   }, [])
 
+  if (windowInfo == null) {
+    return null
+  }
+
+  // =====
+
   const changeWidthBy = (diff: number) => {
     const canChange = width + diff >= minWidth
     setWidth(canChange ? width + diff : width)
@@ -99,6 +105,8 @@ const Window: FC<WindowProps> = ({
     // TODO run close hook
 
     onClose?.(id)
+
+    appContext.destroyWindow(id)
   }
 
   const handleResizeTopDrag = (diff: number) => {

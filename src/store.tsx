@@ -89,16 +89,19 @@ export const useWindowStore = create(
     unregisterWindow: (id) =>
       set((state) => {
         const index = state.windows.findIndex((win) => win.windowFullId === id)
-        if (index < 0) return {}
+        if (index < 0) {
+          throw new Error(`window with id ${id} is not registered`)
+        }
 
-        const newWindowList = state.windows.slice().splice(index, 1)
-        return { windows: newWindowList }
+        state.windows.splice(index, 1)
       }),
 
     changeWindowState: (id, stateToChange) =>
       set((state) => {
         const win = state.windows.find((el) => el.windowFullId === id)
-        if (win == null) return
+        if (win == null) {
+          throw new Error(`window with id ${id} is not registered`)
+        }
 
         win.state = stateToChange
       }),
