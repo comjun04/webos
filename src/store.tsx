@@ -11,26 +11,49 @@ interface AppDetails {
   id: string
   name: string
   icon: ComponentType<IconComponentProps>
+  running: boolean
 }
 
 type AppState = {
   apps: AppDetails[]
-  registerApp: (app: AppDetails) => void
+  getInfo: (id: string) => AppDetails | undefined
+  registerApp: (app: Omit<AppDetails, 'running'>) => void
   unregisterApp: (id: string) => void
+  launch: (id: string) => void
+  kill: (id: string) => void
 }
 
-export const useApplicationStore = create<AppState>((set) => ({
-  apps: [],
-  registerApp: (app) => set((state) => ({ apps: [...state.apps, app] })),
-  unregisterApp: (id) =>
-    set((state) => {
-      const index = state.apps.findIndex((app) => app.id === id)
-      if (index < 0) return {}
+export const useApplicationStore = create(
+  immer<AppState>((set, get) => ({
+    apps: [],
+    getInfo: (id) => get().apps.find((app) => app.id === id),
+    registerApp: (app) =>
+      set((state) => {
+        state.apps.push({ ...app, running: false })
+      }),
+    unregisterApp: (id) =>
+      set((state) => {
+        const index = state.apps.findIndex((app) => app.id === id)
+        if (index < 0) return
 
-      const newAppList = state.apps.slice().splice(index, 1)
-      return { apps: newAppList }
-    }),
-}))
+        state.apps.splice(index, 1)
+      }),
+    launch: (id) =>
+      set((state) => {
+        const app = state.apps.find((el) => el.id === id)
+        if (app != null) {
+          app.running = true
+        }
+      }),
+    kill: (id) =>
+      set((state) => {
+        const app = state.apps.find((el) => el.id === id)
+        if (app != null) {
+          app.running = false
+        }
+      }),
+  }))
+)
 
 // ====
 
@@ -90,7 +113,8 @@ export const useWindowStore = create(
       set((state) => {
         const index = state.windows.findIndex((win) => win.windowFullId === id)
         if (index < 0) {
-          throw new Error(`window with id ${id} is not registered`)
+          console.warn(`Cannot unregister window ${id}. window not registered`)
+          return
         }
 
         state.windows.splice(index, 1)
@@ -100,7 +124,9 @@ export const useWindowStore = create(
       set((state) => {
         const win = state.windows.find((el) => el.windowFullId === id)
         if (win == null) {
-          throw new Error(`window with id ${id} is not registered`)
+          throw new Error(
+            `Cannot change state of window ${id}. window not registered`
+          )
         }
 
         win.state = stateToChange

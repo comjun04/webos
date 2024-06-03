@@ -1,4 +1,5 @@
 import { ComponentType, FC, ReactNode, createContext, useEffect } from 'react'
+import { useShallow } from 'zustand/react/shallow'
 
 import { useApplicationStore, useWindowStore } from '../store'
 
@@ -26,8 +27,13 @@ type ApplicationProps = {
 }
 
 const Application: FC<ApplicationProps> = ({ id, name, icon, children }) => {
-  const registerApp = useApplicationStore((state) => state.registerApp)
-  const unregisterApp = useApplicationStore((state) => state.unregisterApp)
+  const { appInfo, registerApp, unregisterApp } = useApplicationStore(
+    useShallow((state) => ({
+      appInfo: state.getInfo(id),
+      registerApp: state.registerApp,
+      unregisterApp: state.unregisterApp,
+    }))
+  )
 
   const unregisterWindow = useWindowStore((state) => state.unregisterWindow)
 
@@ -35,6 +41,10 @@ const Application: FC<ApplicationProps> = ({ id, name, icon, children }) => {
     registerApp({ id, name, icon })
     return () => unregisterApp(id)
   }, [])
+
+  if (appInfo == null || !appInfo.running) {
+    return null
+  }
 
   return (
     <applicationContext.Provider
