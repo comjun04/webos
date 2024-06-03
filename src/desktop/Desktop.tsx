@@ -1,50 +1,30 @@
-import { FC, ReactNode, useRef, useState } from 'react'
-import { MdLogoDev } from 'react-icons/md'
+import { FC, useRef, useState } from 'react'
 
+import { useApplicationStore } from '../store'
 import DesktopIcon from './DesktopIcon'
-
-// test appplications
-const icons: {
-  icon: ReactNode
-  name: string
-  x: number
-  y: number
-}[] = [
-  {
-    icon: <MdLogoDev size={32} />,
-    name: 'Recycle Bin',
-    x: 0,
-    y: 0,
-  },
-  {
-    icon: <MdLogoDev size={32} />,
-    name: 'Internet Browser',
-    x: 100,
-    y: 50,
-  },
-  {
-    icon: <MdLogoDev size={32} />,
-    name: 'This PC',
-    x: 0,
-    y: 70,
-  },
-  {
-    icon: <MdLogoDev size={32} />,
-    name: 'Test Application',
-    x: 400,
-    y: 234,
-  },
-  {
-    icon: <MdLogoDev size={32} />,
-    name: 'Hello World',
-    x: 250,
-    y: 250,
-  },
-]
 
 const Desktop: FC = () => {
   const [selectedIcon, setSelectedIcon] = useState<string | null>(null)
   const ref = useRef<HTMLDivElement>(null)
+
+  const apps = useApplicationStore((state) => state.apps)
+
+  const iconsPerColumn = Math.floor((ref.current?.clientHeight ?? 64) / 64)
+
+  const desktopIcons = apps.map((app, idx) => {
+    const x = Math.floor(idx / iconsPerColumn) * 80
+    const y = (idx % iconsPerColumn) * 64
+
+    const Icon = app.icon
+
+    return {
+      id: app.id,
+      name: app.name,
+      icon: <Icon size={32} />,
+      x,
+      y,
+    }
+  })
 
   return (
     <div
@@ -57,9 +37,9 @@ const Desktop: FC = () => {
         setSelectedIcon(null)
       }}
     >
-      {icons.map((el, idx) => (
+      {desktopIcons.map((el, idx) => (
         <DesktopIcon
-          key={el.name}
+          key={el.id}
           icon={el.icon}
           name={el.name}
           selected={selectedIcon === el.name}
