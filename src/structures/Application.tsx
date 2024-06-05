@@ -27,20 +27,32 @@ type ApplicationProps = {
 }
 
 const Application: FC<ApplicationProps> = ({ id, name, icon, children }) => {
-  const { appInfo, registerApp, unregisterApp } = useApplicationStore(
-    useShallow((state) => ({
-      appInfo: state.getInfo(id),
-      registerApp: state.registerApp,
-      unregisterApp: state.unregisterApp,
-    }))
+  const { appInfo, registerApp, unregisterApp, kill } = useApplicationStore(
+    useShallow((state) => {
+      return {
+        appInfo: state.getInfo(id),
+        registerApp: state.registerApp,
+        unregisterApp: state.unregisterApp,
+        kill: state.kill,
+      }
+    })
   )
 
-  const unregisterWindow = useWindowStore((state) => state.unregisterWindow)
+  const { windowList, unregisterWindow } = useWindowStore((state) => ({
+    windowList: state.getWindowListInApp(id),
+    unregisterWindow: state.unregisterWindow,
+  }))
 
   useEffect(() => {
     registerApp({ id, name, icon })
     return () => unregisterApp(id)
   }, [])
+
+  useEffect(() => {
+    if (windowList.length < 1) {
+      kill(id)
+    }
+  }, [windowList.length])
 
   if (appInfo == null || !appInfo.running) {
     return null

@@ -77,6 +77,7 @@ type WindowStoreState = {
   windows: WindowDetail[]
 
   getInfo: (id: string) => WindowDetail | undefined
+  getWindowListInApp: (appId: string) => WindowDetail[]
   registerWindow: (win: WindowRegisterPayload) => void
   unregisterWindow: (id: string) => void
   changeWindowState: (id: string, state: WindowState) => void
@@ -89,6 +90,9 @@ export const useWindowStore = create(
       const list = get().windows
       const win = list.find((el) => el.windowFullId === id)
       return win
+    },
+    getWindowListInApp: (appId) => {
+      return get().windows.filter((win) => win.appId === appId)
     },
     registerWindow: (win) =>
       set((state) => {

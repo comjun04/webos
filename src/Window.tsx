@@ -48,9 +48,8 @@ const Window: FC<WindowProps> = ({
   const { windowInfo, registerWindow, unregisterWindow, changeWindowState } =
     useWindowStore(
       useShallow((state) => {
-        const win = state.getInfo(windowFullId)
         return {
-          windowInfo: win,
+          windowInfo: state.getInfo(windowFullId),
           registerWindow: state.registerWindow,
           unregisterWindow: state.unregisterWindow,
           changeWindowState: state.changeWindowState,

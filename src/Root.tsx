@@ -1,8 +1,17 @@
+import { useEffect } from 'react'
+
 import Taskbar from './Taskbar'
 import TestApp from './apps/TestApp/TestApp'
 import Desktop from './desktop/Desktop'
+import { useApplicationStore } from './store'
 
 function App() {
+  const launchApp = useApplicationStore((state) => state.launch)
+
+  useEffect(() => {
+    launchApp('testapp')
+  }, [])
+
   return (
     <div className="flex h-[100vh] flex-col bg-blue-300">
       {/* desktop area */}

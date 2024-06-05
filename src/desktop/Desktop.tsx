@@ -8,6 +8,7 @@ const Desktop: FC = () => {
   const ref = useRef<HTMLDivElement>(null)
 
   const apps = useApplicationStore((state) => state.apps)
+  const launchApp = useApplicationStore((state) => state.launch)
 
   const iconsPerColumn = Math.floor((ref.current?.clientHeight ?? 64) / 64)
 
@@ -50,6 +51,9 @@ const Desktop: FC = () => {
           }}
           onMouseDown={() => {
             setSelectedIcon(el.name)
+          }}
+          onDoubleClick={() => {
+            launchApp(el.id)
           }}
         />
       ))}
