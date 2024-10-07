@@ -6,9 +6,19 @@ import { useApplicationStore, useWindowStore } from '../store'
 export const applicationContext = createContext<{
   id: string
 
+  registerWindow: (
+    payload: {
+      windowId: string
+      title: string
+    },
+    createNow: boolean
+  ) => void
   destroyWindow: (windowId: string) => void
 }>({
   id: '',
+  registerWindow: () => {
+    throw new Error('Cannot find valid Application component')
+  },
   destroyWindow: () => {
     throw new Error('Cannot find valid Application component')
   },
@@ -38,21 +48,23 @@ const Application: FC<ApplicationProps> = ({ id, name, icon, children }) => {
     })
   )
 
-  const { windowList, unregisterWindow } = useWindowStore((state) => ({
-    windowList: state.getWindowListInApp(id),
+  const { registerWindow, unregisterWindow } = useWindowStore((state) => ({
+    // windowList: state.getWindowListInApp(id),
+    registerWindow: state.registerWindow,
     unregisterWindow: state.unregisterWindow,
   }))
 
   useEffect(() => {
+    console.log(`registering application ${id} (${name})`)
     registerApp({ id, name, icon })
     return () => unregisterApp(id)
   }, [])
 
-  useEffect(() => {
-    if (windowList.length < 1) {
-      kill(id)
-    }
-  }, [windowList.length])
+  // useEffect(() => {
+  //   if (windowList.length < 1) {
+  //     kill(id)
+  //   }
+  // }, [windowList.length])
 
   if (appInfo == null || !appInfo.running) {
     return null
@@ -62,10 +74,20 @@ const Application: FC<ApplicationProps> = ({ id, name, icon, children }) => {
     <applicationContext.Provider
       value={{
         id,
+        registerWindow: (payload, createNow) => {
+          if (createNow) {
+            registerWindow({
+              appId: id,
+              windowId: payload.windowId,
+              title: payload.title,
+            })
+          }
+        },
         destroyWindow: (windowId) => {
           const windowFullId = `${id}.${windowId}`
           unregisterWindow(windowFullId)
-          console.log('destoryWindow called', windowFullId)
+
+          console.log('destoryWindow called', windowId)
         },
       }}
     >

@@ -19,6 +19,7 @@ import cn from './util/merge-classnames'
 type WindowProps = {
   id: string
   title: string
+  showOnMount?: boolean
   children: ReactNode
 
   onWindowStateChange?: (windowId: string, newState: WindowState) => void
@@ -28,6 +29,7 @@ type WindowProps = {
 const Window: FC<WindowProps> = ({
   id,
   title,
+  showOnMount = false,
   children,
   onWindowStateChange,
   onClose,
@@ -45,28 +47,25 @@ const Window: FC<WindowProps> = ({
   const appId = appContext.id
   const windowFullId = `${appId}.${id}`
 
-  const { windowInfo, registerWindow, unregisterWindow, changeWindowState } =
-    useWindowStore(
-      useShallow((state) => {
-        return {
-          windowInfo: state.getInfo(windowFullId),
-          registerWindow: state.registerWindow,
-          unregisterWindow: state.unregisterWindow,
-          changeWindowState: state.changeWindowState,
-        }
-      })
-    )
-
-  // layer는 0부터 시작, 처음 초기화 시 windowInfo가 없으므로 임시로 1000 부여
-  const zIndex = 1001 + (windowInfo?.layer ?? -1)
-  const windowState = windowInfo?.state ?? 'normal'
-
-  const minimized = windowState === 'minimized'
-  const maximized = windowState === 'maximized'
+  const { windowInfo, unregisterWindow, changeWindowState } = useWindowStore(
+    useShallow((state) => {
+      return {
+        windowInfo: state.getInfo(windowFullId),
+        unregisterWindow: state.unregisterWindow,
+        changeWindowState: state.changeWindowState,
+      }
+    })
+  )
 
   useEffect(() => {
-    registerWindow({ appId, windowId: id, title })
-    return () => unregisterWindow(windowFullId)
+    console.log(`[${windowFullId}] registering window (${title})`)
+    appContext.registerWindow({ windowId: id, title }, showOnMount)
+
+    console.log(`[${windowFullId}] assigned window id ${id}`)
+    return () => {
+      console.log('unregister')
+      unregisterWindow(windowFullId)
+    }
   }, [])
 
   if (windowInfo == null) {
@@ -74,6 +73,13 @@ const Window: FC<WindowProps> = ({
   }
 
   // =====
+
+  // layer는 0부터 시작, 처음 초기화 시 windowInfo가 없으므로 임시로 1000 부여
+  const zIndex = 1001 + (windowInfo?.layer ?? -1)
+  const windowState = windowInfo?.state ?? 'normal'
+
+  const minimized = windowState === 'minimized'
+  const maximized = windowState === 'maximized'
 
   const changeWidthBy = (diff: number) => {
     const canChange = width + diff >= minWidth

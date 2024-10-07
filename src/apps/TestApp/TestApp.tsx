@@ -7,7 +7,7 @@ import Application from '../../structures/Application'
 const TestApp: FC = () => {
   return (
     <Application id="testapp" name="Test Application" icon={MdLogoDev}>
-      <Window id="main" title="This is a title">
+      <Window id="main" title="This is a title" showOnMount>
         <div>Hello World in WebOS!</div>
       </Window>
     </Application>

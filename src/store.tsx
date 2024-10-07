@@ -77,7 +77,7 @@ type WindowStoreState = {
   windows: WindowDetail[]
 
   getInfo: (id: string) => WindowDetail | undefined
-  getWindowListInApp: (appId: string) => WindowDetail[]
+  // getWindowListInApp: (appId: string) => WindowDetail[]
   registerWindow: (win: WindowRegisterPayload) => void
   unregisterWindow: (id: string) => void
   changeWindowState: (id: string, state: WindowState) => void
@@ -91,11 +91,19 @@ export const useWindowStore = create(
       const win = list.find((el) => el.windowFullId === id)
       return win
     },
-    getWindowListInApp: (appId) => {
-      return get().windows.filter((win) => win.appId === appId)
-    },
+    // getWindowListInApp: (appId) => {
+    //   return get().windows.filter((win) => win.appId === appId)
+    // },
     registerWindow: (win) =>
       set((state) => {
+        const windowFullId = `${win.appId}.${win.windowId}`
+        if (state.windows.find((win) => win.windowFullId === windowFullId)) {
+          console.error(
+            `Attempted to register already registered window id \`${windowFullId}\``
+          )
+          return
+        }
+
         let highestWindowLayer = -1
         for (const w of state.windows) {
           if (w.layer > highestWindowLayer) {
@@ -103,8 +111,8 @@ export const useWindowStore = create(
           }
         }
 
-        const windowFullId = `${win.appId}.${win.windowId}`
         const layer = highestWindowLayer + 1
+
         state.windows.push({
           appId: win.appId,
           windowFullId,
@@ -117,7 +125,6 @@ export const useWindowStore = create(
       set((state) => {
         const index = state.windows.findIndex((win) => win.windowFullId === id)
         if (index < 0) {
-          console.warn(`Cannot unregister window ${id}. window not registered`)
           return
         }
 
@@ -128,9 +135,10 @@ export const useWindowStore = create(
       set((state) => {
         const win = state.windows.find((el) => el.windowFullId === id)
         if (win == null) {
-          throw new Error(
+          console.warn(
             `Cannot change state of window ${id}. window not registered`
           )
+          return
         }
 
         win.state = stateToChange
