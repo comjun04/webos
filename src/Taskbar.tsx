@@ -16,7 +16,7 @@ const Taskbar: FC = () => {
   console.log(windowList)
 
   return (
-    <div className="align-center fixed bottom-0 flex h-12 h-[48px] w-full flex-row bg-gray-300 p-1">
+    <div className="align-center fixed bottom-0 flex h-12 w-full flex-row bg-gray-300 p-1">
       <div className="rounded-md p-2 transition duration-100 hover:bg-black/30">
         {/* start menu */}
         <MdHome size={24} />
