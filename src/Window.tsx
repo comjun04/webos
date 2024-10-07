@@ -1,4 +1,6 @@
-import { FC, ReactNode, useContext, useEffect, useRef, useState } from 'react'
+import { Resizable } from 're-resizable'
+import { FC, ReactNode, useContext, useEffect, useState } from 'react'
+import { flushSync } from 'react-dom'
 import Draggable from 'react-draggable'
 import {
   MdClose,
@@ -9,8 +11,6 @@ import {
 } from 'react-icons/md'
 import { useShallow } from 'zustand/react/shallow'
 
-import WindowResizeBorder from './WindowResizeBorder'
-import WindowResizeCorner from './WindowResizeCorner'
 import { useWindowStore } from './store'
 import { applicationContext } from './structures/Application'
 import { WindowState } from './types'
@@ -36,11 +36,14 @@ const Window: FC<WindowProps> = ({
 }) => {
   const [locationX, setLocationX] = useState<number>(0)
   const [locationY, setLocationY] = useState<number>(0)
+  const [prevLocationX, setPrevLocationX] = useState(locationX)
+  const [prevLocationY, setPrevLocationY] = useState(locationY)
   const [width, setWidth] = useState(600)
   const [height, setHeight] = useState(600)
+  const [prevWidth, setPrevWidth] = useState(width)
+  const [prevHeight, setPrevHeight] = useState(height)
   const [minWidth] = useState(160)
   const [minHeight] = useState(80) // header height
-  const ref = useRef<HTMLDivElement>(null)
 
   const appContext = useContext(applicationContext)
 
@@ -87,17 +90,6 @@ const Window: FC<WindowProps> = ({
   const minimized = windowState === 'minimized'
   const maximized = windowState === 'maximized'
 
-  const changeWidthBy = (diff: number) => {
-    const canChange = width + diff >= minWidth
-    setWidth(canChange ? width + diff : width)
-    return canChange
-  }
-  const changeHeightBy = (diff: number) => {
-    const canChange = height + diff >= minHeight
-    setHeight(canChange ? height + diff : height)
-    return canChange
-  }
-
   const handleMinimizeBtnClick = () => {
     changeWindowState(
       windowFullId,
@@ -120,148 +112,103 @@ const Window: FC<WindowProps> = ({
     appContext.destroyWindow(id)
   }
 
-  const handleResizeTopDrag = (diff: number) => {
-    if (ref.current == null) return
-
-    const changed = changeHeightBy(-1 * diff)
-    if (changed) {
-      setLocationY((y) => (y += diff))
-    }
-  }
-  const handleResizeBottomDrag = (diff: number) => {
-    if (ref.current == null) return
-
-    changeHeightBy(diff)
-  }
-  const handleResizeLeftDrag = (diff: number) => {
-    if (ref.current == null) return
-
-    const changed = changeWidthBy(-1 * diff)
-    if (changed) {
-      setLocationX((x) => (x += diff))
-    }
-  }
-  const handleResizeRightDrag = (diff: number) => {
-    if (ref.current == null) return
-
-    changeWidthBy(diff)
-  }
-
   return (
     <Draggable
       handle=".topbar"
       cancel=".topbar button"
-      bounds="body"
+      // bounds="body"
       position={maximized ? { x: 0, y: 0 } : { x: locationX, y: locationY }}
       disabled={maximized}
       onDrag={(_, eventData) => {
         setLocationX(eventData.x)
         setLocationY(eventData.y)
       }}
+      onStop={() => {
+        setPrevLocationX(locationX)
+        setPrevLocationY(locationY)
+      }}
     >
       <div
-        className={cn(
-          'absolute left-0 top-0 border border-gray-600',
-          !maximized && 'shadow-xl',
-          minimized ? 'invisible' : ''
-        )}
+        className="absolute left-0 top-0"
         style={{
-          width: maximized ? '100%' : width,
-          height: maximized ? '100%' : height,
+          width: maximized ? '100%' : 'auto',
+          height: maximized ? '100%' : 'auto',
           zIndex,
         }}
-        ref={ref}
       >
-        <div className="relative flex h-full w-full flex-col">
-          {/* resize borders */}
-          {!maximized && (
-            <>
-              <WindowResizeBorder variant="top" onDrag={handleResizeTopDrag} />
-              <WindowResizeBorder
-                variant="bottom"
-                onDrag={handleResizeBottomDrag}
-              />
-              {/* <div className="absolute left-[-3px] h-full w-[6px] cursor-ew-resize" />
-        <div className="absolute right-[-3px] h-full w-[6px] cursor-ew-resize" /> */}
-              <WindowResizeBorder
-                variant="left"
-                onDrag={handleResizeLeftDrag}
-              />
-              <WindowResizeBorder
-                variant="right"
-                onDrag={handleResizeRightDrag}
-              />
-            </>
+        <Resizable
+          size={{
+            width: maximized ? '100%' : prevWidth,
+            height: maximized ? '100%' : prevHeight,
+          }}
+          minWidth={minWidth}
+          minHeight={minHeight}
+          enable={maximized ? false : undefined}
+          className={cn(
+            'border border-gray-600',
+            !maximized && 'shadow-xl',
+            minimized ? 'invisible' : ''
           )}
+          onResize={(_e, direction, _ref, d) => {
+            // https://github.com/bokuweb/react-rnd/issues/945
+            flushSync(() => {
+              setWidth(prevWidth + d.width)
+              setHeight(prevHeight + d.height)
 
-          {/* resize corners */}
-          <>
-            <WindowResizeCorner
-              variant="topleft"
-              onDrag={(diff) => {
-                handleResizeTopDrag(diff.y)
-                handleResizeLeftDrag(diff.x)
-              }}
-            />
-            <WindowResizeCorner
-              variant="topright"
-              onDrag={(diff) => {
-                handleResizeTopDrag(diff.y)
-                handleResizeRightDrag(diff.x)
-              }}
-            />
-            <WindowResizeCorner
-              variant="bottomleft"
-              onDrag={(diff) => {
-                handleResizeBottomDrag(diff.y)
-                handleResizeLeftDrag(diff.x)
-              }}
-            />
-            <WindowResizeCorner
-              variant="bottomright"
-              onDrag={(diff) => {
-                handleResizeBottomDrag(diff.y)
-                handleResizeRightDrag(diff.x)
-              }}
-            />
-          </>
+              if (direction.toLowerCase().includes('left')) {
+                setLocationX(prevLocationX - d.width)
+              }
+              if (direction.toLowerCase().includes('top')) {
+                setLocationY(prevLocationY - d.height)
+              }
+            })
+          }}
+          onResizeStop={() => {
+            setPrevWidth(width)
+            setPrevHeight(height)
 
-          {/* header */}
-          <div className="topbar flex h-[30px] flex-row border-b border-b-gray-600 bg-white">
-            <div className="flex shrink flex-row items-center gap-1 truncate px-2 py-1">
-              <MdLogoDev size={20} className="flex-none" />
-              <span className="select-none text-sm">{title}</span>
+            setPrevLocationX(locationX)
+            setPrevLocationY(locationY)
+          }}
+        >
+          <div className="relative flex h-full w-full flex-col">
+            {/* header */}
+            <div className="topbar flex h-[30px] flex-row border-b border-b-gray-600 bg-white">
+              <div className="flex shrink flex-row items-center gap-1 truncate px-2 py-1">
+                <MdLogoDev size={20} className="flex-none" />
+                <span className="select-none text-sm">{title}</span>
+              </div>
+              <div className="grow" />
+              <div className="flex flex-row">
+                <button
+                  className="flex items-center justify-center px-3 transition hover:bg-black/30"
+                  onClick={handleMinimizeBtnClick}
+                >
+                  <MdMinimize size={20} />
+                </button>
+                <button
+                  className="flex items-center justify-center px-3 transition hover:bg-black/30"
+                  onClick={handleMaximizeBtnClick}
+                >
+                  {maximized ? (
+                    <MdFullscreenExit size={20} />
+                  ) : (
+                    <MdFullscreen size={20} />
+                  )}
+                </button>
+                <button
+                  className="flex items-center justify-center px-3 transition hover:bg-red-500/70"
+                  onClick={handleCloseBtnClick}
+                >
+                  <MdClose size={20} />
+                </button>
+              </div>
             </div>
-            <div className="grow" />
-            <div className="flex flex-row">
-              <button
-                className="flex items-center justify-center px-3 transition hover:bg-black/30"
-                onClick={handleMinimizeBtnClick}
-              >
-                <MdMinimize size={20} />
-              </button>
-              <button
-                className="flex items-center justify-center px-3 transition hover:bg-black/30"
-                onClick={handleMaximizeBtnClick}
-              >
-                {maximized ? (
-                  <MdFullscreenExit size={20} />
-                ) : (
-                  <MdFullscreen size={20} />
-                )}
-              </button>
-              <button
-                className="flex items-center justify-center px-3 transition hover:bg-red-500/70"
-                onClick={handleCloseBtnClick}
-              >
-                <MdClose size={20} />
-              </button>
-            </div>
+            {/* header end */}
+
+            <div className="grow">{children}</div>
           </div>
-          {/* header end */}
-
-          <div className="grow">{children}</div>
-        </div>
+        </Resizable>
       </div>
     </Draggable>
   )
