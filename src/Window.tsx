@@ -68,6 +68,12 @@ const Window: FC<WindowProps> = ({
     }
   }, [])
 
+  useEffect(() => {
+    if (windowInfo?.state != null) {
+      onWindowStateChange?.(id, windowInfo.state)
+    }
+  }, [windowInfo?.state])
+
   if (windowInfo == null) {
     return null
   }
