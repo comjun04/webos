@@ -48,11 +48,13 @@ const Application: FC<ApplicationProps> = ({ id, name, icon, children }) => {
     })
   )
 
-  const { registerWindow, unregisterWindow } = useWindowStore((state) => ({
-    // windowList: state.getWindowListInApp(id),
-    registerWindow: state.registerWindow,
-    unregisterWindow: state.unregisterWindow,
-  }))
+  const { windowList, registerWindow, unregisterWindow } = useWindowStore(
+    (state) => ({
+      windowList: state.windows.filter((win) => win.appId === id),
+      registerWindow: state.registerWindow,
+      unregisterWindow: state.unregisterWindow,
+    })
+  )
 
   useEffect(() => {
     console.log(`registering application ${id} (${name})`)
@@ -60,11 +62,12 @@ const Application: FC<ApplicationProps> = ({ id, name, icon, children }) => {
     return () => unregisterApp(id)
   }, [])
 
-  // useEffect(() => {
-  //   if (windowList.length < 1) {
-  //     kill(id)
-  //   }
-  // }, [windowList.length])
+  // temporary: close application when all windows are unregistered
+  useEffect(() => {
+    if (windowList.length < 1) {
+      kill(id)
+    }
+  }, [windowList.length])
 
   if (appInfo == null || !appInfo.running) {
     return null
