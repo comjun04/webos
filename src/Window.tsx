@@ -2,11 +2,11 @@ import { Resizable } from 're-resizable'
 import { FC, ReactNode, useContext, useEffect, useState } from 'react'
 import { flushSync } from 'react-dom'
 import Draggable from 'react-draggable'
+import { IconType } from 'react-icons'
 import {
   MdClose,
   MdFullscreen,
   MdFullscreenExit,
-  MdLogoDev,
   MdMinimize,
 } from 'react-icons/md'
 import { useShallow } from 'zustand/react/shallow'
@@ -24,6 +24,7 @@ type WindowProps = {
   title: string
   showOnMount?: boolean
   initialSize?: { width: number; height: number }
+  Icon?: IconType
   children: ReactNode
 
   onWindowStateChange?: (windowId: string, newState: WindowState) => void
@@ -35,6 +36,7 @@ const Window: FC<WindowProps> = ({
   title,
   showOnMount = false,
   initialSize = { width: 600, height: 600 },
+  Icon,
   children,
   onWindowStateChange,
   onClose,
@@ -178,7 +180,7 @@ const Window: FC<WindowProps> = ({
             {/* header */}
             <div className="topbar flex h-[30px] flex-row border-b border-b-gray-600 bg-white">
               <div className="flex shrink flex-row items-center gap-1 truncate px-2 py-1">
-                <MdLogoDev size={20} className="flex-none" />
+                {Icon != null && <Icon size={20} className="flex-none" />}
                 <span className="select-none text-sm">{title}</span>
               </div>
               <div className="grow" />
