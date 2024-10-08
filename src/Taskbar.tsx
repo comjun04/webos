@@ -24,7 +24,7 @@ const Taskbar: FC = () => {
 
       <div className="mx-1 h-full w-[1px] border-r border-black/30"></div>
 
-      <div className="flex flex-row gap-2">
+      <div className="flex flex-row gap-1">
         {windowList.map((win) => (
           <button
             className={cn(
