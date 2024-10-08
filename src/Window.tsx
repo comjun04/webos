@@ -132,7 +132,7 @@ const Window: FC<WindowProps> = ({
       }}
     >
       <div
-        className="absolute left-0 top-0"
+        className="absolute left-0 top-0 overflow-hidden"
         style={{
           width: maximized ? '100%' : 'auto',
           height: maximized ? '100%' : 'auto',
