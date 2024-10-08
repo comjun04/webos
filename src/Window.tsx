@@ -16,10 +16,14 @@ import { applicationContext } from './structures/Application'
 import { WindowState } from './types'
 import cn from './util/merge-classnames'
 
+const MIN_WIDTH = 160
+const MIN_HEIGHT = 80 // header height
+
 type WindowProps = {
   id: string
   title: string
   showOnMount?: boolean
+  initialSize?: { width: number; height: number }
   children: ReactNode
 
   onWindowStateChange?: (windowId: string, newState: WindowState) => void
@@ -30,6 +34,7 @@ const Window: FC<WindowProps> = ({
   id,
   title,
   showOnMount = false,
+  initialSize = { width: 600, height: 600 },
   children,
   onWindowStateChange,
   onClose,
@@ -38,12 +43,10 @@ const Window: FC<WindowProps> = ({
   const [locationY, setLocationY] = useState<number>(0)
   const [prevLocationX, setPrevLocationX] = useState(locationX)
   const [prevLocationY, setPrevLocationY] = useState(locationY)
-  const [width, setWidth] = useState(600)
-  const [height, setHeight] = useState(600)
+  const [width, setWidth] = useState(Math.max(initialSize.width, MIN_WIDTH))
+  const [height, setHeight] = useState(Math.max(initialSize.height, MIN_HEIGHT))
   const [prevWidth, setPrevWidth] = useState(width)
   const [prevHeight, setPrevHeight] = useState(height)
-  const [minWidth] = useState(160)
-  const [minHeight] = useState(80) // header height
 
   const appContext = useContext(applicationContext)
 
@@ -141,8 +144,8 @@ const Window: FC<WindowProps> = ({
             width: maximized ? '100%' : prevWidth,
             height: maximized ? '100%' : prevHeight,
           }}
-          minWidth={minWidth}
-          minHeight={minHeight}
+          minWidth={MIN_WIDTH}
+          minHeight={MIN_HEIGHT}
           enable={maximized ? false : undefined}
           className={cn(
             'border border-gray-600',
